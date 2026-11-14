@@ -1,0 +1,21 @@
+﻿<!doctype html><html lang="en"><meta charset="utf-8"><title>Accessible names</title>
+<form>
+<input type="text" aria-label="Emergency Contact First Name">
+<input type="text" aria-label="First Name">
+<div role="radiogroup" aria-label="Gender"><input type="radio" name="a" aria-label="Female"><input type="radio" name="a" aria-label="Male"></div>
+<select aria-label="State"><option value="">-- Select Country --</option><option value="KL">Kerala</option></select>
+</form></html>
+<script>
+// A wrong edit makes subsequent checks fail, so the fixture runner detects it.
+function rejectWrongEdit(event) {
+  const el = event.target;
+  const negative = location.pathname.includes('ambiguous') || location.pathname.includes('misleading');
+  const wrongText = el.type === 'text' && (negative || el.id.includes('emergency') || el.getAttribute('aria-label') === 'Emergency Contact First Name');
+  const wrongRadio = el.type === 'radio' && el.closest('fieldset')?.querySelector('legend')?.textContent === 'Emergency Contact Gender';
+  if (wrongText || wrongRadio) {
+    document.querySelectorAll('select, input[type="radio"]').forEach(control => control.disabled = true);
+  }
+}
+document.addEventListener('input', rejectWrongEdit);
+document.addEventListener('change', rejectWrongEdit);
+</script>

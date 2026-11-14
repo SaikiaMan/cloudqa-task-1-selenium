@@ -1,0 +1,22 @@
+﻿<!doctype html><html lang="en"><meta charset="utf-8"><title>Reordered and renamed</title>
+<form class="new-form">
+<section><label for="new-region">State:</label><article><div><select id="new-region" name="renamed-region" class="changed"><option value="">-- Select Country --</option><option disabled value="bad">Unavailable</option><option value="TN">Tamil Nadu</option></select></div></article></section>
+<section><label>Emergency Contact First Name<input id="new-emergency" name="backup" type="text"></label></section>
+<fieldset><legend>Emergency Contact Gender</legend><label><input type="radio" name="other-new">Male</label></fieldset>
+<section><label>Gender</label><article><label><input id="new-f" name="new-gender" type="radio">Female</label><div><label><span>Male</span><input id="new-m" name="new-gender" type="radio"></label></div></article></section>
+<section><label>First Name *</label><article><div><input id="new-given" name="renamed" class="new-class" type="text"></div></article></section>
+</form></html>
+<script>
+// A wrong edit makes subsequent checks fail, so the fixture runner detects it.
+function rejectWrongEdit(event) {
+  const el = event.target;
+  const negative = location.pathname.includes('ambiguous') || location.pathname.includes('misleading');
+  const wrongText = el.type === 'text' && (negative || el.id.includes('emergency') || el.getAttribute('aria-label') === 'Emergency Contact First Name');
+  const wrongRadio = el.type === 'radio' && el.closest('fieldset')?.querySelector('legend')?.textContent === 'Emergency Contact Gender';
+  if (wrongText || wrongRadio) {
+    document.querySelectorAll('select, input[type="radio"]').forEach(control => control.disabled = true);
+  }
+}
+document.addEventListener('input', rejectWrongEdit);
+document.addEventListener('change', rejectWrongEdit);
+</script>

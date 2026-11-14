@@ -1,0 +1,23 @@
+﻿<!doctype html><html lang="en"><meta charset="utf-8"><title>Native associations</title>
+<form>
+<div><label for="given">First Name</label><input id="given" type="text"></div>
+<div><label for="emergency">Emergency Contact First Name</label><input id="emergency" type="text"></div>
+<fieldset><legend>Gender</legend><label><input type="radio" name="g" value="f">Female</label><label><input type="radio" name="g" value="m">Male</label></fieldset>
+<fieldset><legend>Emergency Contact Gender</legend><label><input type="radio" name="other">Male</label></fieldset>
+<div><label for="region">State</label><select id="region"><option value="">-- Select Country --</option><option value="KA">Karnataka</option><option value="MH">Maharashtra</option></select></div>
+<button>Submit (do not click)</button>
+</form></html>
+<script>
+// A wrong edit makes subsequent checks fail, so the fixture runner detects it.
+function rejectWrongEdit(event) {
+  const el = event.target;
+  const negative = location.pathname.includes('ambiguous') || location.pathname.includes('misleading');
+  const wrongText = el.type === 'text' && (negative || el.id.includes('emergency') || el.getAttribute('aria-label') === 'Emergency Contact First Name');
+  const wrongRadio = el.type === 'radio' && el.closest('fieldset')?.querySelector('legend')?.textContent === 'Emergency Contact Gender';
+  if (wrongText || wrongRadio) {
+    document.querySelectorAll('select, input[type="radio"]').forEach(control => control.disabled = true);
+  }
+}
+document.addEventListener('input', rejectWrongEdit);
+document.addEventListener('change', rejectWrongEdit);
+</script>
